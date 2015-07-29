@@ -1,0 +1,9 @@
+---
+- name: restart logstash-docker
+  docker:
+    name: logstash
+    image: logstash
+    state: restarted
+    docker_api_version: "{{ docker_api_version }}"
+
+

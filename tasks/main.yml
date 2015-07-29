@@ -1,0 +1,31 @@
+---
+- name: make logstash config dir
+  file: path=/var/lib/logstash state=directory
+
+- name: Set up logstash.conf
+  template:
+    src: logstash.conf.j2
+    dest: "{{ logstash_mapped_dir }}/logstash.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart logstash-docker
+
+- name: docker run logstash server
+  docker:
+    docker_api_version: "{{ docker_api_version }}"
+    name: logstash
+    image: logstash
+    command: logstash -f /config-dir/logstash.conf
+    state: started
+    #net: bridge
+    expose:
+      - "{{ logstash_server_port }}/udp"
+    ports:
+      - "{{ logstash_container_port }}:{{ logstash_server_port }}/udp"
+    volumes:
+      - "{{ logstash_mapped_dir }}:/config-dir"
+
+# this is an alternative to above
+#- name: docker cmdline
+#  shell: docker run  -d -p {{ logstash_container_port }}:8514/udp  -v /var/lib/logstash/:/config-dir logstash logstash -f /config-dir/logstash.conf

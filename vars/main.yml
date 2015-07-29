@@ -1,0 +1,13 @@
+docker_api_version: 1.18
+
+# port opened on the docker host
+# for logstash syslog listener
+logstash_container_port: 32768
+
+# inside container, what port we listen on
+logstash_server_port: 8514
+logstash_mapped_dir: /var/lib/logstash
+
+# set these 2 to log to a remote syslog server
+remote_syslog_server: "{{ logstash_server }}"
+remote_syslog_port: "{{ logstash_port }}"
