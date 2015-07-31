@@ -11,3 +11,5 @@ logstash_mapped_dir: /var/lib/logstash
 # set these 2 to log to a remote syslog server
 remote_syslog_server: "{{ logstash_server }}"
 remote_syslog_port: "{{ logstash_port }}"
+
+cluster_name: elasticky

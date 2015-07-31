@@ -11,12 +11,22 @@ output {
   #   path => "/var/log/logstash/logstash.stdout"
   #   }
 
-{% if send_to_host and send_to_port %}
-  # this is really just a demo, forware all logs
-  # to a host that is running nc -lk {{ send_to_port }}
-  tcp {
-    host => "{{ send_to_host }}"
-    port => {{ send_to_port }}
-    }
+#{% if send_to_host and send_to_port %}
+#  # this is really just a demo, forware all logs
+#  # to a host that is running nc -lk {{ send_to_port }}
+#  tcp {
+#    host => "{{ send_to_host }}"
+#    port => {{ send_to_port }}
+#    }
+#{% endif %}
+
+{% if groups['elasticsearch'] %}
+  elasticsearch {
+    cluster => "{{ cluster_name }}"
+    # comma separated list of elasticsearch hosts
+    host => [{% for host in groups['elasticsearch'] %}"{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+    protocol => "transport"
+    sniffing => true
+  }
 {% endif %}
 }

@@ -17,6 +17,7 @@
     name: logstash
     image: logstash
     command: logstash -f /config-dir/logstash.conf
+    memory_limit: "{{ memory_limit }}"
     state: started
     #net: bridge
     expose:
