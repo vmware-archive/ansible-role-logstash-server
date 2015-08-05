@@ -1,2 +1,2 @@
 # use 512MB, type string, or 0 for unlimited
-memory_limit: 0
+memory_limit: 0MB
