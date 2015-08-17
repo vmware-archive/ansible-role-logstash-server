@@ -1,32 +1,31 @@
 ---
-- name: make logstash config dir
-  file: path=/var/lib/logstash state=directory
+- name: create docker build dir
+  file: state=directory path={{ logstash_docker_build }}
 
-- name: Set up logstash.conf
-  template:
-    src: logstash.conf.j2
-    dest: "{{ logstash_mapped_dir }}/logstash.conf"
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart logstash-docker
+- name: sync the docker image src to remote nodes
+  copy: src=../../../containers/docker/logstash-server/ dest={{ logstash_docker_build }} mode=755
+  tags:
+    - rsync
+
+- name: build the image
+  shell: cd {{ logstash_docker_build }} && /bin/bash ./build.sh
 
 - name: docker run logstash server
   docker:
     docker_api_version: "{{ docker_api_version }}"
     name: logstash
-    image: logstash
-    command: logstash -f /config-dir/logstash.conf
+    image: "{{ logstash_docker_image }}"
     memory_limit: "{{ memory_limit }}"
-    state: started
-    #net: bridge
+    restart_policy: always
+    state: reloaded
+    command: /start.sh -tags testingtag
+#    env:
+#      SERVICE_CHECK_SCRIPT: timeout 1 cat < /dev/null > /dev/tcp/$SERVICE_IP/$SERVICE_PORT
     expose:
-      - "{{ logstash_server_port }}/udp"
+      #- "{{ logstash_server_port }}/udp"
+      - "{{ logstash_server_port }}/tcp"
     ports:
-      - "{{ logstash_container_port }}:{{ logstash_server_port }}/udp"
-    volumes:
-      - "{{ logstash_mapped_dir }}:/config-dir"
-
-# this is an alternative to above
-#- name: docker cmdline
-#  shell: docker run  -d -p {{ logstash_container_port }}:8514/udp  -v /var/lib/logstash/:/config-dir logstash logstash -f /config-dir/logstash.conf
+      #- "{{ logstash_container_port }}:{{ logstash_server_port }}/udp"
+      - "{{ logstash_container_port }}:{{ logstash_server_port }}/tcp"
+#    volumes:
+#      - "{{ logstash_mapped_dir }}:/config-dir"

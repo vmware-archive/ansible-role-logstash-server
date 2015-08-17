@@ -1,2 +1,7 @@
 # use 512MB, type string, or 0 for unlimited
 memory_limit: 0MB
+
+logstash_docker_build: /tmp/logstash
+logstash_mapped_dir:
+logstash_docker_image: vmware-opencloud/logstash-server
+elasticsearch_cluster_name: default_clustername
