@@ -2,10 +2,14 @@
 - name: create docker build dir
   file: state=directory path={{ logstash_docker_build }}
 
+# we don't have rsync for photon yet, so use copy.
+# copy doesn't have exclude and fails on the .git dir, so
+# we use the with_fileglob to avoid getting .git
 - name: sync the docker image src to remote nodes
-  copy: src=../../../containers/docker/logstash-server/ dest={{ logstash_docker_build }} mode=755
-  tags:
-    - rsync
+  copy: src={{ item }} dest={{ logstash_docker_build }} mode=755
+  with_fileglob:
+    - ../../../../containers/docker/logstash-server/*
+
 
 - name: build the image
   shell: cd {{ logstash_docker_build }} && /bin/bash ./build.sh
