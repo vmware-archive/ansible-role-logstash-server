@@ -12,6 +12,7 @@
 
 
 - name: build the image
+  async: 1000
   shell: cd {{ logstash_docker_build }} && /bin/bash ./build.sh
 
 - name: docker run logstash server
