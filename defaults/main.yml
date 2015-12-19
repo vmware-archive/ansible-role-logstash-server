@@ -13,10 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-# use 512MB, type string, or 0 for unlimited
+# Container memory limit. Use 512MB, type string, or 0 for unlimited.
 memory_limit: 0MB
 
+# Where to place temporary build artifacts when building the container.
 logstash_docker_build: /tmp/logstash
+
+# Directories (volumes) to map to /config-dir in the container.
+# Note, not currently used, but planned for future use.
 logstash_mapped_dir:
+
+# The Docker image to use to start containers.
 logstash_docker_image: vmware-opencloud/logstash-server
+
+# The elasticsearch cluster to link to.
 elasticsearch_cluster_name: default_clustername
