@@ -1,4 +1,4 @@
-# ansible-role-elasticsearch
+# ansible-role-logstash-server
 
 Ansible playbook to automate installing and maintaining logstash as containers.
 
@@ -7,28 +7,15 @@ Ansible playbook to automate installing and maintaining logstash as containers.
 This role currently requires a working VMware Photon server with enabled
 Docker environment.
 
-This role also has some remaining dependencies on the
-[Chaperone](https://github.com/vmware/chaperone) project. In particular, this role requires that an external source (e.g., the
-playbook) define the variables following:
+This role also has a dependency on the
+[Chaperone](https://github.com/vmware/chaperone) project. In particular, this
+role requires that an external source (e.g., the playbook) define the following
+variable (the default expectation is supplied, but can be any valid Docker
+version):
 
 ```yaml
 # The Docker API version to use for manipulating the containers.
 docker_api_version: 1.18
-
-logstash_docker_image: vmware-opencloud/logstash-server
-
-# TCP port that logstash should bind to (listen on within the container).
-- logstash_server_port
-
-# TCP container (public) port to map to the container interanal logstash port.
-- logstash_container_port
-```
-
-## Role Variables
-
-```yaml
-# this is where the UI installs the ovftool this by default
-ovftool: /usr/local/bin/ovftool/ovftool
 ```
 
 ## Role Variables
@@ -45,10 +32,16 @@ logstash_docker_build: /tmp/logstash
 logstash_mapped_dir:
 
 # The Docker image to use to start containers.
-logstash_docker_image: vmware-opencloud/logstash-server
+logstash_docker_image: openedge/logstash-server
 
 # The elasticsearch cluster to link to.
 elasticsearch_cluster_name: default_clustername
+
+# TCP port that logstash listen on (as syslog) within the container.
+logstash_server_port: 514
+
+# TCP container (public) port to map to the container internal logstash port.
+logstash_container_port: 514
 ```
 
 ## Example playbook

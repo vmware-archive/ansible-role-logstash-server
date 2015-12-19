@@ -24,7 +24,13 @@ logstash_docker_build: /tmp/logstash
 logstash_mapped_dir:
 
 # The Docker image to use to start containers.
-logstash_docker_image: vmware-opencloud/logstash-server
+logstash_docker_image: openedge/logstash-server
 
 # The elasticsearch cluster to link to.
 elasticsearch_cluster_name: default_clustername
+
+# TCP port that logstash listen on (as syslog) within the container.
+logstash_server_port: 514
+
+# TCP container (public) port to map to the container internal logstash port.
+logstash_container_port: 514
